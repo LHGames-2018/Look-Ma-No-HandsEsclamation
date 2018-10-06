@@ -24,29 +24,21 @@ class Bot:
 
         positionJoueur = self.PlayerInfo.Position
 
-        positionCible = Point(positionJoueur.x + 5, positionJoueur.y + 5)
-
-        try:
-            ennemy = visiblePlayers[0]
-            if distanceCheck(positionJoueur, ennemy.Position):
-                positionCible = ennemy.Position
-        except:
-            ennemy = False
-
-
-        showMap(gameMap)
-        print(positionJoueur)
-        print(positionCible)
+        ennemy = ennemyPlusProche(visiblePlayers, positionJoueur, self._killedPlayers)
+        if ennemy != 0:
+            positionCible = ennemy.Position
+        else:
+            positionCible = Point(positionJoueur.x + 5, positionJoueur.y + 5)
 
         nextStep = pathFinder.getNextLocation(gameMap, positionJoueur, positionCible)
         direction = Point(nextStep.x - positionJoueur.x, nextStep.y - positionJoueur.y)
 
         prochaineTuile = gameMap.getTileAt(nextStep)
 
-        print(prochaineTuile)
-        print(direction)
-
         if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
+            if ennemy != 0:
+                if ennemy.Health <= 2:
+                    self._killedPlayers.append(ennemy.Name)
             return create_attack_action(direction)
 
         return create_move_action(direction)
@@ -66,6 +58,17 @@ def showMap(gameMap):
 
 def distanceCheck(joueur, p2):
     return abs(joueur.x - p2.x) <= 10 and abs(joueur.y - p2.y) <= 10
+
+def ennemyPlusProche(ennemies, posiitonJoueur, names):
+    ennemiProche = 0
+    distanceMin = 10000
+    for mechant in ennemies:
+        if distanceCheck(posiitonJoueur, mechant.Position) and mechant.Name not in names:
+            distance = Point.Distance(mechant.Position, posiitonJoueur)
+            if distance < distanceMin:
+                distanceMin = distance
+                ennemiProche = mechant
+    return ennemiProche
 
 def sortTiles(gameMap):
     sortedTiles = {}
