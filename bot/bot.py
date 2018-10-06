@@ -1,6 +1,5 @@
 from helper import *
-from botTools import *
-
+from helper import TileContent
 class Bot:
     def __init__(self):
         pass
@@ -19,13 +18,15 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
+        positionJoueur = self.PlayerInfo.Position
+        positionAdjacente = Point(positionJoueur.x + 1, positionJoueur.y)
 
-        # Write your bot here. Use functions from aiHelper to instantiate your actions.
-        print(self.PlayerInfo)
-        showMap(gameMap)
-        print(sortTiles(gameMap)[str(TileContent.Resource.value)])
-        
-        return create_move_action(Point(1, 0))
+        action = create_move_action(Point(1, 0))
+
+        if gameMap.getTileAt(positionAdjacente) == TileContent.Wall:
+            action = create_attack_action(Point(1, 0))
+
+        return action
 
     def after_turn(self):
         """

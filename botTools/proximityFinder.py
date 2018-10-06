@@ -1,19 +1,33 @@
 import math
-from helper import TileContent
+from helper import Point
 
-def findCloseRessource(playerPosition, tiles):
-    min = 200
-    positionPlusProche = playerPosition
-    for row in tiles:
-        for col in row:
-            if not col.TileContent == TileContent.Resource:
-                continue
-            pos = col.Position
-            x = math.pow(pos - playerPosition[0], 2)
-            y = math.pow(pos.y - playerPosition[1], 2)
+
+class ProximityFinder:
+
+    @staticmethod
+    def findClosestTile(playerPosition, tiles):
+
+        """
+
+        Retourne la position de la tuile la plus proche du personnage
+
+        :param playerPosition: position du joueur
+        :param tiles: une liste des tuiles de meme type
+        :return: la position de la tuile la plus proche dans cette liste
+
+        """
+
+        positionTuileProche = {}
+        distanceMin = 20000
+        for tuile in tiles:
+            x = math.pow(tuile.x - playerPosition.x, 2)
+            y = pow(tuile.y - playerPosition.y, 2)
             distance = math.sqrt(x + y)
-            print(distance)
-            if distance < min:
-                min = distance
-                positionPlusProche = pos
-    return positionPlusProche
+
+            if distance < distanceMin:
+                positionTuileProche = Point(tuile.x, tuile.y)
+                distanceMin = distance
+
+        return positionTuileProche
+
+
