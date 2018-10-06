@@ -15,10 +15,6 @@ class Bot:
             :param playerInfo: Your bot's current state.
         """
         self.PlayerInfo = playerInfo
-        print("Carried ressources:", playerInfo.CarriedRessources)
-        print("Carrying Capacity:", playerInfo.CarryingCapacity)
-        print("Total ressources:", playerInfo.TotalRessources)
-        print("Current health:", playerInfo.Health)
 
     def execute_turn(self, gameMap, visiblePlayers):
         """
@@ -30,26 +26,26 @@ class Bot:
         positionJoueur = self.PlayerInfo.Position
 
         ennemy = ennemyPlusProche(visiblePlayers, positionJoueur, self._killedPlayers)
+
         if ennemy != 0:
             positionCible = ennemy.Position
-            print("cible trouvee")
         else:
             positionCible = Point(positionJoueur.x + 5, positionJoueur.y + 5)
-            print("on se promene")
 
         nextStep = pathFinder.getNextLocation(gameMap, positionJoueur, positionCible)
         direction = Point(nextStep.x - positionJoueur.x, nextStep.y - positionJoueur.y)
 
         prochaineTuile = gameMap.getTileAt(nextStep)
 
-        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
+        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player or (prochaineTuile == TileContent.House and nextStep == ennemy.Position):
             if ennemy != 0:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
-            print("J'attaque", direction)
+            print("Jattaque", direction, prochaineTuile)
             return create_attack_action(direction)
 
-        print("je bouge", direction)
+
+        print("je bouge", direction, prochaineTuile, positionCible)
         return create_move_action(direction)
 
     def after_turn(self):
@@ -89,18 +85,3 @@ def sortTiles(gameMap):
             else:
                 sortedTiles[tileType] = [Point(x, y)]
     return sortedTiles
-
-
-def getCloserLocation(playerLocation, otherLocation):
-
-    if( abs(otherLocation.x - playerLocation.x) > 10):
-        if (otherLocation.x > playerLocation.x):
-            otherLocation.x = playerLocation.x + 10
-        else:
-            otherLocation.x = playerLocation.x - 10
-
-    if (abs(otherLocation.y - playerLocation.y) > 10):
-        if (otherLocation.y > playerLocation.y):
-            otherLocation.y = playerLocation.y + 10
-        else:
-            otherLocation.y = playerLocation.y - 10
