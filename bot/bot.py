@@ -33,10 +33,12 @@ class Bot:
 
         action = create_move_action(direction)
 
+        ennemy = False
         try:
-            ennemy = visiblePlayers[0]
-            if ennemy.Name in self._killedPlayers:
-                ennemy = False
+            for mechan in visiblePlayers:
+                ennemy = mechan
+                if ennemy.Name in self._killedPlayers:
+                    ennemy = False
         except:
             ennemy = False
 
