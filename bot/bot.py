@@ -1,4 +1,5 @@
 from helper import *
+from botTools.proximityFinder import findCloseRessource
 
 
 class Bot:
@@ -19,8 +20,10 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
+
         # Write your bot here. Use functions from aiHelper to instantiate your actions.
         afficherMap(gameMap)
+        print(self.PlayerInfo)
         return create_move_action(Point(1, 0))
 
     def after_turn(self):
