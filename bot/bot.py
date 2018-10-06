@@ -15,6 +15,10 @@ class Bot:
             :param playerInfo: Your bot's current state.
         """
         self.PlayerInfo = playerInfo
+        print("Carried ressources:", playerInfo.CarriedRessources)
+        print("Carrying Capacity:", playerInfo.CarryingCapacity)
+        print("Total ressources:", playerInfo.TotalRessources)
+        print("Current health:", playerInfo.Health)
 
     def execute_turn(self, gameMap, visiblePlayers):
         """
@@ -28,8 +32,10 @@ class Bot:
         ennemy = ennemyPlusProche(visiblePlayers, positionJoueur, self._killedPlayers)
         if ennemy != 0:
             positionCible = ennemy.Position
+            print("cible trouvee")
         else:
             positionCible = Point(positionJoueur.x + 5, positionJoueur.y + 5)
+            print("on se promene")
 
         nextStep = pathFinder.getNextLocation(gameMap, positionJoueur, positionCible)
         direction = Point(nextStep.x - positionJoueur.x, nextStep.y - positionJoueur.y)
@@ -40,7 +46,7 @@ class Bot:
             if ennemy != 0:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
-            print("Jattaque", direction)
+            print("J'attaque", direction)
             return create_attack_action(direction)
 
         print("je bouge", direction)
@@ -83,3 +89,18 @@ def sortTiles(gameMap):
             else:
                 sortedTiles[tileType] = [Point(x, y)]
     return sortedTiles
+
+
+def getCloserLocation(playerLocation, otherLocation):
+
+    if( abs(otherLocation.x - playerLocation.x) > 10):
+        if (otherLocation.x > playerLocation.x):
+            otherLocation.x = playerLocation.x + 10
+        else:
+            otherLocation.x = playerLocation.x - 10
+
+    if (abs(otherLocation.y - playerLocation.y) > 10):
+        if (otherLocation.y > playerLocation.y):
+            otherLocation.y = playerLocation.y + 10
+        else:
+            otherLocation.y = playerLocation.y - 10
