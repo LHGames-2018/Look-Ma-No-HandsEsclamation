@@ -26,6 +26,7 @@ class Bot:
         positionJoueur = self.PlayerInfo.Position
 
         ennemy = ennemyPlusProche(visiblePlayers, positionJoueur, self._killedPlayers)
+
         if ennemy != 0:
             positionCible = ennemy.Position
         else:
@@ -36,15 +37,15 @@ class Bot:
 
         prochaineTuile = gameMap.getTileAt(nextStep)
 
-        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
+        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player or (prochaineTuile == TileContent.House and positionCible == ennemy.Position):
             if ennemy != 0:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
-            print("Jattaque", direction)
+            print("Jattaque", direction, prochaineTuile)
             return create_attack_action(direction)
 
 
-        print("je bouge", direction)
+        print("je bouge", direction, prochaineTuile, positionCible)
         return create_move_action(direction)
 
     def after_turn(self):
