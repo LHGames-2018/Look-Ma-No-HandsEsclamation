@@ -43,6 +43,7 @@ class Bot:
             print("Jattaque", direction)
             return create_attack_action(direction)
 
+
         print("je bouge", direction)
         return create_move_action(direction)
 
