@@ -23,8 +23,9 @@ class Bot:
         direction = Point(1, 0)
         action = create_move_action(Point(1, 0))
         positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
+        prochaineTuile = gameMap.getTileAt(positionAdjacente)
 
-        if gameMap.getTileAt(positionAdjacente) == TileContent.Resource or gameMap.getTileAt(positionAdjacente) == TileContent.House or gameMap.getTileAt(positionAdjacente) == TileContent.Shop:
+        if prochaineTuile == TileContent.Resource or prochaineTuile == TileContent.House or prochaineTuile == TileContent.Shop:
             action = create_move_action(Point(direction.y, direction.x))
 
         ennemy = visiblePlayers[0]
@@ -50,8 +51,10 @@ class Bot:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
 
-        if gameMap.getTileAt(Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)) == TileContent.Wall:
+        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
             action = create_attack_action(direction)
+
+        print(action)
 
         return action
 
