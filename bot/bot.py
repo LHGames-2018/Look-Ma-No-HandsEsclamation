@@ -6,7 +6,7 @@ from helper import TileContent
 class Bot:
     def __init__(self):
         self._killedPlayers = []
-        
+
         pass
 
     def before_turn(self, playerInfo):
@@ -40,8 +40,10 @@ class Bot:
             if ennemy != 0:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
+            print("Jattaque", direction)
             return create_attack_action(direction)
 
+        print("je bouge", direction)
         return create_move_action(direction)
 
     def after_turn(self):
