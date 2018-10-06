@@ -1,5 +1,6 @@
 from helper import *
 from helper import TileContent
+
 class Bot:
     def __init__(self):
         self._killedPlayers = []
@@ -18,6 +19,12 @@ class Bot:
             :param gameMap: The gamemap.
             :param visiblePlayers:  The list of visible players.
         """
+
+        # Write your bot here. Use functions from aiHelper to instantiate your actions.
+        # showMap(gameMap)
+        # prochain = pathFinder.getNextLocation(gameMap, self.PlayerInfo.Position, sortTiles(gameMap)[str(TileContent.Resource.value)][0])
+        # deplacement = prochain - self.PlayerInfo.Position
+        # return create_move_action(deplacement)
 
         positionJoueur = self.PlayerInfo.Position
         direction = Point(1, 0)
