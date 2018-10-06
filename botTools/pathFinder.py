@@ -21,22 +21,25 @@ def getNextLocation(gameMap, depart, arrivee):
                 elif gameMap.getTileAt(point) == TileContent.Wall:
                     valeur = 3
                 elif gameMap.getTileAt(point) == TileContent.House:
-                    valeur = 999
+                    valeur = 700
                 elif gameMap.getTileAt(point) == TileContent.Shop:
-                    valeur = 999
+                    valeur = 600
                 elif gameMap.getTileAt(point) == TileContent.Resource:
-                    valeur = 999
+                    valeur = 500
                 
                 graph.add_edge((x, y), (point.x, point.y), valeur)
 
-    _, path = dijsktra.dijsktra(graph, (depart.x, depart.y))
+    distances, path = dijsktra.dijsktra(graph, (depart.x, depart.y))
     
-    depart = (depart.x, depart.y)
+    ptDepart = (depart.x, depart.y)
     point = (arrivee.x, arrivee.y)
-    avantDernier = None
+    avantDernier = point
 
-    while point != depart:
+    if depart == point:
+        return depart, 0
+
+    while point != ptDepart:
         avantDernier = point
         point = path[point]
-    
-    return Point(avantDernier[0], avantDernier[1])
+
+    return Point(avantDernier[0], avantDernier[1]), distances[(arrivee.x, arrivee.y)]

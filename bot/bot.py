@@ -1,5 +1,5 @@
-from helper import *
-from helper import TileContent
+from helper import TileContent, aiHelper, Point
+from botTools import pathFinder
 
 class Bot:
     def __init__(self):
@@ -21,62 +21,25 @@ class Bot:
         """
 
         # Write your bot here. Use functions from aiHelper to instantiate your actions.
-        # showMap(gameMap)
-        # prochain = pathFinder.getNextLocation(gameMap, self.PlayerInfo.Position, sortTiles(gameMap)[str(TileContent.Resource.value)][0])
-        # deplacement = prochain - self.PlayerInfo.Position
-        # return create_move_action(deplacement)
+        if self.PlayerInfo.CarriedResources / self.PlayerInfo.CarryingCapacity > 0.75:
+            prochain, _ = pathFinder.getNextLocation(gameMap, self.PlayerInfo.Position, self.PlayerInfo.HouseLocation)
+            deplacement = prochain - self.PlayerInfo.Position
+            return getNextAction(gameMap.getTileAt(prochain), deplacement)
+        else:
+            distanceMin = 99999
+            prochainProche = None
+            for ressource in sortTiles(gameMap)[str(TileContent.Resource.value)]:
+                prochain, valeur = pathFinder.getNextLocation(gameMap, self.PlayerInfo.Position, ressource)
+                if valeur < distanceMin:
+                    distanceMin = valeur
+                    prochainProche = ressource
 
-        positionJoueur = self.PlayerInfo.Position
-        direction = Point(1, 0)
-        positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-        prochaineTuile = gameMap.getTileAt(positionAdjacente)
+            if not prochainProche:
+                return aiHelper.create_move_action(Point(0, 1))
 
-        action = create_move_action(direction)
-
-        ennemy = False
-        try:
-            for mechan in visiblePlayers:
-                ennemy = mechan
-                if ennemy.Name in self._killedPlayers:
-                    ennemy = False
-        except:
-            ennemy = False
-
-        if ennemy:
-            diffx = ennemy.Position.x - positionJoueur.x
-            diffy = ennemy.Position.y - positionJoueur.y
-            if diffx > diffy:
-                direction = Point(1, 0)
-                positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-                prochaineTuile = gameMap.getTileAt(positionAdjacente)
-            else:
-                direction = Point(0, 1)
-                positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-                prochaineTuile = gameMap.getTileAt(positionAdjacente)
-
-            action = create_move_action(direction)
-
-            if diffy + diffx == 1:
-                self._killedPlayers.append(ennemy)
-                if diffx == 1:
-                    action = create_attack_action(Point(diffx, 0))
-                if diffy == 1:
-                    action = create_attack_action(Point(0, diffy))
-                if ennemy.Health <= 2:
-                    self._killedPlayers.append(ennemy.Name)
-
-        if prochaineTuile == TileContent.House or prochaineTuile == TileContent.Shop or prochaineTuile == TileContent.Resource:
-            direction = Point(direction.y, direction.x)
-            positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-            prochaineTuile = gameMap.getTileAt(positionAdjacente)
-            action = create_move_action(direction)
-
-        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
-            action = create_attack_action(direction)
-
-        print(prochaineTuile)
-
-        return action
+            prochain, valeur = pathFinder.getNextLocation(gameMap, self.PlayerInfo.Position, prochainProche)
+            deplacement = prochain - self.PlayerInfo.Position
+            return getNextAction(gameMap.getTileAt(prochain), deplacement)
 
     def after_turn(self):
         """
@@ -101,3 +64,11 @@ def sortTiles(gameMap):
             else:
                 sortedTiles[tileType] = [Point(x, y)]
     return sortedTiles
+
+def getNextAction(tileType, deplacement):
+    if tileType == TileContent.Resource:
+        return aiHelper.create_collect_action(deplacement)
+    elif tileType == TileContent.Wall or tileType == TileContent.Player:
+        return aiHelper.create_attack_action(deplacement)
+    else:
+        return aiHelper.create_move_action(deplacement)
