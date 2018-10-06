@@ -29,5 +29,3 @@ class ProximityFinder:
                 distanceMin = distance
 
         return positionTuileProche
-
-
