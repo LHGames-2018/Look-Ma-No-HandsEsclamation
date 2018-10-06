@@ -1,4 +1,6 @@
 from helper import *
+import queue
+from botTools import pathFinder
 from helper import TileContent
 
 class Bot:
@@ -20,63 +22,34 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
-        # Write your bot here. Use functions from aiHelper to instantiate your actions.
-        # showMap(gameMap)
-        # prochain = pathFinder.getNextLocation(gameMap, self.PlayerInfo.Position, sortTiles(gameMap)[str(TileContent.Resource.value)][0])
-        # deplacement = prochain - self.PlayerInfo.Position
-        # return create_move_action(deplacement)
-
         positionJoueur = self.PlayerInfo.Position
-        direction = Point(1, 0)
-        positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-        prochaineTuile = gameMap.getTileAt(positionAdjacente)
 
-        action = create_move_action(direction)
+        positionCible = Point(positionJoueur.x + 5, positionJoueur.y + 5)
 
-        ennemy = False
         try:
-            for mechan in visiblePlayers:
-                ennemy = mechan
-                if ennemy.Name in self._killedPlayers:
-                    ennemy = False
+            ennemy = visiblePlayers[0]
+            if distanceCheck(positionJoueur, ennemy.Position):
+                positionCible = ennemy.Position
         except:
             ennemy = False
 
-        if ennemy:
-            diffx = ennemy.Position.x - positionJoueur.x
-            diffy = ennemy.Position.y - positionJoueur.y
-            if diffx > diffy:
-                direction = Point(1, 0)
-                positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-                prochaineTuile = gameMap.getTileAt(positionAdjacente)
-            else:
-                direction = Point(0, 1)
-                positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-                prochaineTuile = gameMap.getTileAt(positionAdjacente)
 
-            action = create_move_action(direction)
+        showMap(gameMap)
+        print(positionJoueur)
+        print(positionCible)
 
-            if diffy + diffx == 1:
-                self._killedPlayers.append(ennemy)
-                if diffx == 1:
-                    action = create_attack_action(Point(diffx, 0))
-                if diffy == 1:
-                    action = create_attack_action(Point(0, diffy))
-                if ennemy.Health <= 2:
-                    self._killedPlayers.append(ennemy.Name)
+        nextStep = pathFinder.getNextLocation(gameMap, positionJoueur, positionCible)
+        direction = Point(nextStep.x - positionJoueur.x, nextStep.y - positionJoueur.y)
 
-        if prochaineTuile == TileContent.House or prochaineTuile == TileContent.Shop or prochaineTuile == TileContent.Resource:
-            direction = Point(direction.y, direction.x)
-            positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
-            prochaineTuile = gameMap.getTileAt(positionAdjacente)
-            action = create_move_action(direction)
-
-        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
-            action = create_attack_action(direction)
+        prochaineTuile = gameMap.getTileAt(nextStep)
 
         print(prochaineTuile)
+        print(direction)
 
-        return action
+        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
+            return create_attack_action(direction)
+
+        return create_move_action(direction)
 
     def after_turn(self):
         """
@@ -90,6 +63,9 @@ def showMap(gameMap):
         for x in range(gameMap.xMin, gameMap.xMax):
             line += str(gameMap.getTileAt(Point(x, y)).value) + " "
         print(line)
+
+def distanceCheck(joueur, p2):
+    return abs(joueur.x - p2.x) <= 10 and abs(joueur.y - p2.y) <= 10
 
 def sortTiles(gameMap):
     sortedTiles = {}
