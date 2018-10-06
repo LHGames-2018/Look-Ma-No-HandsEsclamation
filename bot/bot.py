@@ -2,6 +2,7 @@ from helper import *
 from helper import TileContent
 class Bot:
     def __init__(self):
+        self._killedPlayers = []
         pass
 
     def before_turn(self, playerInfo):
@@ -19,16 +20,18 @@ class Bot:
         """
 
         positionJoueur = self.PlayerInfo.Position
-        positionAdjacente = Point(positionJoueur.x + 1, positionJoueur.y)
-        direction = Point(0, 0)
+        direction = Point(1, 0)
         action = create_move_action(Point(1, 0))
+        positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
 
         if gameMap.getTileAt(positionAdjacente) == TileContent.Resource or gameMap.getTileAt(positionAdjacente) == TileContent.House or gameMap.getTileAt(positionAdjacente) == TileContent.Shop:
-            action = create_move_action(Point(0, 1))
+            action = create_move_action(Point(direction.y, direction.x))
 
+        ennemy = visiblePlayers[0]
+        if ennemy.Name in self._killedPlayers:
+            ennemy = False
 
-        if len(visiblePlayers) > 0:
-            ennemy = visiblePlayers[0]
+        if ennemy:
             diffx = ennemy.Position.x - positionJoueur.x
             diffy = ennemy.Position.y - positionJoueur.y
             if diffx > diffy:
@@ -39,11 +42,13 @@ class Bot:
                 direction = Point(0, 1)
 
             if diffy + diffx == 1:
-
+                self._killedPlayers.append(ennemy)
                 if diffx == 1:
                     action = create_attack_action(Point(diffx, 0))
                 if diffy == 1:
                     action = create_attack_action(Point(0, diffy))
+                if ennemy.Health <= 2:
+                    self._killedPlayers.append(ennemy.Name)
 
         if gameMap.getTileAt(Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)) == TileContent.Wall:
             action = create_attack_action(direction)
