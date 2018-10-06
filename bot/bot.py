@@ -37,7 +37,7 @@ class Bot:
 
         prochaineTuile = gameMap.getTileAt(nextStep)
 
-        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player or (prochaineTuile == TileContent.House and positionCible == ennemy.Position):
+        if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player or (prochaineTuile == TileContent.House and nextStep == ennemy.Position):
             if ennemy != 0:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
