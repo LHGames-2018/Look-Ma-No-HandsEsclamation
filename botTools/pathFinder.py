@@ -1,5 +1,5 @@
 from botTools import dijsktra
-from helper import Point
+from helper import Point, TileContent
 
 def getNextLocation(gameMap, depart, arrivee):
     graph = dijsktra.Graph()
@@ -15,9 +15,21 @@ def getNextLocation(gameMap, depart, arrivee):
             pointsAdjacents.append(Point(x, y + 1))
 
             for point in pointsAdjacents:
-                graph.add_edge((x, y), (point.x, point.y), 1)
+                valeur = 1
+                if gameMap.getTileAt(point) == TileContent.Lava:
+                    valeur = 999
+                elif gameMap.getTileAt(point) == TileContent.Wall:
+                    valeur = 3
+                elif gameMap.getTileAt(point) == TileContent.House:
+                    valeur = 999
+                elif gameMap.getTileAt(point) == TileContent.Shop:
+                    valeur = 999
+                elif gameMap.getTileAt(point) == TileContent.Resource:
+                    valeur = 999
+                
+                graph.add_edge((x, y), (point.x, point.y), valeur)
 
-    visited, path = dijsktra.dijsktra(graph, (depart.x, depart.y))
+    _, path = dijsktra.dijsktra(graph, (depart.x, depart.y))
     
     depart = (depart.x, depart.y)
     point = (arrivee.x, arrivee.y)
