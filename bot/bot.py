@@ -23,8 +23,6 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
-        return create_move_action(Point(0, 1))
-
         positionJoueur = self.PlayerInfo.Position
 
         ennemy = ennemyPlusProche(visiblePlayers, positionJoueur, self._killedPlayers)

@@ -26,6 +26,8 @@ def getNextLocation(gameMap, depart, arrivee):
                     valeur = 999
                 elif gameMap.getTileAt(point) == TileContent.Resource:
                     valeur = 999
+                elif gameMap.getTileAt(point) == TileContent.Player:
+                    valeur = 10
                 
                 graph.add_edge((x, y), (point.x, point.y), valeur)
 
