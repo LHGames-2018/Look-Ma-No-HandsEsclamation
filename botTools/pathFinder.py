@@ -19,7 +19,10 @@ def getNextLocation(gameMap, depart, arrivee):
                 if gameMap.getTileAt(point) == TileContent.Lava:
                     valeur = 999
                 elif gameMap.getTileAt(point) == TileContent.Wall:
-                    valeur = 3
+                    if gameMap.wallsAreBreakable:
+                        valeur = 3
+                    else:
+                        valeur = 999
                 elif gameMap.getTileAt(point) == TileContent.House:
                     valeur = 700
                 elif gameMap.getTileAt(point) == TileContent.Shop:
