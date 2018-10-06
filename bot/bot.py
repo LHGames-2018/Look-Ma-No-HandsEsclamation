@@ -20,10 +20,18 @@ class Bot:
         """
 
         # Write your bot here. Use functions from aiHelper to instantiate your actions.
-        return create_collect_action(Point(1, 0))
+        afficherMap(gameMap)
+        return create_move_action(Point(1, 0))
 
     def after_turn(self):
         """
         Gets called after executeTurn
         """
         pass
+
+def afficherMap(gameMap):
+    for row in reversed(gameMap.tiles):
+        line = ""
+        for tile in row:
+            line += str(tile.TileContent.value) + " "
+        print(line)
