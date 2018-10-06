@@ -28,16 +28,18 @@ class Bot:
 
         positionJoueur = self.PlayerInfo.Position
         direction = Point(1, 0)
-        action = create_move_action(Point(1, 0))
         positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
         prochaineTuile = gameMap.getTileAt(positionAdjacente)
 
-        if prochaineTuile == TileContent.Resource or prochaineTuile == TileContent.House or prochaineTuile == TileContent.Shop:
-            action = create_move_action(Point(direction.y, direction.x))
-            direction = Point(direction.y, direction.x)
+        action = create_move_action(direction)
 
-        ennemy = visiblePlayers[0]
-        if ennemy.Name in self._killedPlayers:
+        ennemy = False
+        try:
+            for mechan in visiblePlayers:
+                ennemy = mechan
+                if ennemy.Name in self._killedPlayers:
+                    ennemy = False
+        except:
             ennemy = False
 
         if ennemy:
@@ -45,12 +47,14 @@ class Bot:
             diffy = ennemy.Position.y - positionJoueur.y
             if diffx > diffy:
                 direction = Point(1, 0)
+                positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
+                prochaineTuile = gameMap.getTileAt(positionAdjacente)
             else:
                 direction = Point(0, 1)
+                positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
+                prochaineTuile = gameMap.getTileAt(positionAdjacente)
 
             action = create_move_action(direction)
-            if gameMap.getTileAt(Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)):
-                action = create_move_action(Point(direction.y, direction.y))
 
             if diffy + diffx == 1:
                 self._killedPlayers.append(ennemy)
@@ -61,10 +65,16 @@ class Bot:
                 if ennemy.Health <= 2:
                     self._killedPlayers.append(ennemy.Name)
 
+        if prochaineTuile == TileContent.House or prochaineTuile == TileContent.Shop or prochaineTuile == TileContent.Resource:
+            direction = Point(direction.y, direction.x)
+            positionAdjacente = Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)
+            prochaineTuile = gameMap.getTileAt(positionAdjacente)
+            action = create_move_action(direction)
+
         if prochaineTuile == TileContent.Wall or prochaineTuile == TileContent.Player:
             action = create_attack_action(direction)
 
-        print(action)
+        print(prochaineTuile)
 
         return action
 
