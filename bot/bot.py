@@ -6,6 +6,7 @@ from helper import TileContent
 class Bot:
     def __init__(self):
         self._killedPlayers = []
+        
         pass
 
     def before_turn(self, playerInfo):
