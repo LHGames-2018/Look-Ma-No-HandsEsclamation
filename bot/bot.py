@@ -23,6 +23,8 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
+        print(self.PlayerInfo)
+
         positionJoueur = self.PlayerInfo.Position
 
         ennemy = ennemyPlusProche(visiblePlayers, positionJoueur, self._killedPlayers)
@@ -30,7 +32,7 @@ class Bot:
         if ennemy != 0:
             positionCible = ennemy.Position
         else:
-            positionCible = Point(positionJoueur.x + 5, positionJoueur.y + 5)
+            positionCible = Point(positionJoueur.x, positionJoueur.y + 5)
 
         nextStep = pathFinder.getNextLocation(gameMap, positionJoueur, positionCible)
         direction = Point(nextStep.x - positionJoueur.x, nextStep.y - positionJoueur.y)
