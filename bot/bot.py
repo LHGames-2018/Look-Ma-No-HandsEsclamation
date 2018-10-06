@@ -1,6 +1,5 @@
 from helper import *
-from botTools.proximityFinder import findCloseRessource
-
+from botTools import *
 
 class Bot:
     def __init__(self):
@@ -22,8 +21,10 @@ class Bot:
 
 
         # Write your bot here. Use functions from aiHelper to instantiate your actions.
-        afficherMap(gameMap)
         print(self.PlayerInfo)
+        showMap(gameMap)
+        print(sortTiles(gameMap)[str(TileContent.Resource.value)])
+        
         return create_move_action(Point(1, 0))
 
     def after_turn(self):
@@ -32,9 +33,20 @@ class Bot:
         """
         pass
 
-def afficherMap(gameMap):
-    for row in reversed(gameMap.tiles):
+def showMap(gameMap):
+    for y in range(gameMap.yMin, gameMap.yMax):
         line = ""
-        for tile in row:
-            line += str(tile.TileContent.value) + " "
+        for x in range(gameMap.xMin, gameMap.xMax):
+            line += str(gameMap.getTileAt(Point(x, y)).value) + " "
         print(line)
+
+def sortTiles(gameMap):
+    sortedTiles = {}
+    for y in range(gameMap.yMin, gameMap.yMax):
+        for x in range(gameMap.xMin, gameMap.xMax):
+            tileType = str(gameMap.getTileAt(Point(x, y)).value)
+            if sortedTiles.get(tileType):
+                sortedTiles[tileType].append(Point(x, y))
+            else:
+                sortedTiles[tileType] = [Point(x, y)]
+    return sortedTiles
