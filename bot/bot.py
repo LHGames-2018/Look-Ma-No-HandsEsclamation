@@ -27,6 +27,7 @@ class Bot:
 
         if prochaineTuile == TileContent.Resource or prochaineTuile == TileContent.House or prochaineTuile == TileContent.Shop:
             action = create_move_action(Point(direction.y, direction.x))
+            direction = Point(direction.y, direction.x)
 
         ennemy = visiblePlayers[0]
         if ennemy.Name in self._killedPlayers:
@@ -36,11 +37,13 @@ class Bot:
             diffx = ennemy.Position.x - positionJoueur.x
             diffy = ennemy.Position.y - positionJoueur.y
             if diffx > diffy:
-                action = create_move_action(Point(1, 0))
                 direction = Point(1, 0)
             else:
-                action = create_move_action(Point(0, 1))
                 direction = Point(0, 1)
+
+            action = create_move_action(direction)
+            if gameMap.getTileAt(Point(positionJoueur.x + direction.x, positionJoueur.y + direction.y)):
+                action = create_move_action(Point(direction.y, direction.y))
 
             if diffy + diffx == 1:
                 self._killedPlayers.append(ennemy)
