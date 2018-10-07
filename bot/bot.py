@@ -23,7 +23,10 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
-        print(self.PlayerInfo)
+        print("Carried ressources:", self.playerInfo.CarriedRessources)
+        print("Carrying Capacity:", self.playerInfo.CarryingCapacity)
+        print("Total ressources:", self.playerInfo.TotalRessources)
+        print("Current health:", self.playerInfo.Health)
 
         positionJoueur = self.PlayerInfo.Position
 
@@ -87,3 +90,17 @@ def sortTiles(gameMap):
             else:
                 sortedTiles[tileType] = [Point(x, y)]
     return sortedTiles
+
+def getCloserLocation(playerLocation, otherLocation):
+
+    if( abs(otherLocation.x - playerLocation.x) > 10):
+        if (otherLocation.x > playerLocation.x):
+            otherLocation.x = playerLocation.x + 10
+        else:
+            otherLocation.x = playerLocation.x - 10
+
+    if (abs(otherLocation.y - playerLocation.y) > 10):
+        if (otherLocation.y > playerLocation.y):
+            otherLocation.y = playerLocation.y + 10
+        else:
+            otherLocation.y = playerLocation.y - 10
