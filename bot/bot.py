@@ -23,10 +23,10 @@ class Bot:
             :param visiblePlayers:  The list of visible players.
         """
 
-        print("Carried ressources:", self.playerInfo.CarriedRessources)
-        print("Carrying Capacity:", self.playerInfo.CarryingCapacity)
-        print("Total ressources:", self.playerInfo.TotalRessources)
-        print("Current health:", self.playerInfo.Health)
+        print("Carried ressources:", self.PlayerInfo.CarriedRessources)
+        print("Carrying Capacity:", self.PlayerInfo.CarryingCapacity)
+        print("Total ressources:", self.PlayerInfo.TotalRessources)
+        print("Current health:", self.PlayerInfo.Health)
 
         positionJoueur = self.PlayerInfo.Position
 
